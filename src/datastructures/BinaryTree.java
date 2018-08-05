@@ -7,29 +7,88 @@ public class BinaryTree {
 
     public static void main(String[] args) {
 	BinaryTree b = new BinaryTree();
-	b.insert(5);
-	b.insert(3);
-	b.insert(10);
-	b.insert(2);
-	b.insert(1);
-	b.insert(8);
-	b.traverse();
+	Node n1 = new Node(1);
+	Node n2 = new Node(2);
+	Node n3 = new Node(3);
+	n1.left = n2;
+	n1.right = n3;
+	n2.left = new Node(4);
+	n2.right = new Node(5);
+	n3.left = new Node(6);
+	n3.right = new Node(7);
+	b.head = n1;
+	b.traversePreOrder();
+	b.traverseInOrder();
+	b.traversePostOrder();
     }
 
-    private void traverse() {
-	traverse(head);
+    private void traversePreOrder() {
+	traversePreOrderRec(head);
 	System.out.println();
 	System.out.println("Preorder iteration");
 	traversePreOrder(head);
     }
 
-    public void traverse(Node head) {
+    private void traverseInOrder() {
+	System.out.println();
+	System.out.println("In Order recursion");
+	traverseInOrderRec(head);
+	System.out.println();
+	traverseInOrder(head);
+    }
+
+    private void traversePostOrder() {
+	System.out.println();
+	System.out.println("Post Order recursion");
+	traversePostOrderRec(head);
+	System.out.println();
+	traversePostOrder(head);
+    }
+
+    private void traversePostOrderRec(Node head) {
+	if (head == null) {
+	    return;
+	}
+	traversePostOrderRec(head.left);
+	traversePostOrderRec(head.right);
+	System.out.print(head.data + " ");
+    }
+
+    private void traversePostOrder(Node head) {
+	Stack<Node> s = new Stack<>();
+	Node temp = head;
+	while (true) {
+	    while (temp != null) {
+		s.push(temp);
+		temp = temp.left;
+	    }
+	    if (s.isEmpty())
+		break;
+	    temp = s.peek();
+	    if (temp.right == null) {
+		s.pop();
+		System.out.print(temp.data + " ");
+		while (!s.isEmpty() && temp == s.peek().right) {
+		    temp = s.pop();
+		    System.out.print(temp.data + " ");
+		}
+	    }
+	    if (!s.isEmpty()) {
+		temp = s.peek().right;
+	    } else {
+		temp = null;
+	    }
+	}
+
+    }
+
+    public void traversePreOrderRec(Node head) {
 	if (head == null) {
 	    return;
 	}
 	System.out.print(head.data + " ");
-	traverse(head.left);
-	traverse(head.right);
+	traversePreOrderRec(head.left);
+	traversePreOrderRec(head.right);
 
     }
 
@@ -46,16 +105,29 @@ public class BinaryTree {
 	}
     }
 
+    public void traverseInOrderRec(Node head) {
+	if (head == null) {
+	    return;
+	}
+	traverseInOrderRec(head.left);
+	System.out.print(head.data + " ");
+	traverseInOrderRec(head.right);
+
+    }
+
     public void traverseInOrder(Node head) {
 	Stack<Node> s = new Stack<>();
+	Node temp = head;
 	while (true) {
-	    Node temp = head;
 	    while (temp != null) {
 		s.push(temp);
 		temp = temp.left;
 	    }
 	    if (s.isEmpty())
 		break;
+	    temp = s.pop();
+	    System.out.print(temp.data + " ");
+	    temp = temp.right;
 	}
     }
 
