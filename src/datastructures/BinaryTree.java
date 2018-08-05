@@ -1,5 +1,7 @@
 package datastructures;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 public class BinaryTree {
@@ -20,6 +22,22 @@ public class BinaryTree {
 	b.traversePreOrder();
 	b.traverseInOrder();
 	b.traversePostOrder();
+	b.traverseLevelOrder();
+    }
+
+    private void traverseLevelOrder() {
+	Queue<Node> q = new LinkedList<>();
+	q.offer(head);
+	while (!q.isEmpty()) {
+	    Node temp = q.poll();
+	    System.out.println(temp.data);
+	    if (temp.left != null) {
+		q.offer(temp.left);
+	    }
+	    if (temp.right != null) {
+		q.offer(temp.right);
+	    }
+	}
     }
 
     private void traversePreOrder() {
@@ -43,6 +61,7 @@ public class BinaryTree {
 	traversePostOrderRec(head);
 	System.out.println();
 	traversePostOrder(head);
+	System.out.println();
     }
 
     private void traversePostOrderRec(Node head) {
