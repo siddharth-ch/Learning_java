@@ -50,7 +50,31 @@ public class BinaryTree {
 		Node item = b.searchRec(b.head, 15);
 		System.out.println("Height of Tree from Root: Recursive: " + b.getHeightRec(b.head) + " Iterative: "
 				+ b.getHeightIterative());
+		System.out.println("Diameter of tree is " + b.getMaxDiameterOfTree());
+		List<String> list = new ArrayList<String>();
+		b.getAllPathsFromRootToLeaf(list);
+		System.out.println("Paths : " );
+		list.stream().forEach(System.out::println);
+	}
 
+	private void getAllPathsFromRootToLeaf() {
+
+	}
+
+	private int getMaxDiameterOfTree() {
+		int[] res = new int[1];
+		getDiameter(head, res);
+		return res[0];
+	}
+
+	private int getDiameter(Node temp, int[] res) {
+		if (temp == null) {
+			return 0;
+		}
+		int left = getDiameter(temp.left, res);
+		int right = getDiameter(temp.right, res);
+		res[0] = Math.max(res[0], left + right);
+		return Math.max(left, right) + 1;
 	}
 
 	private int getHeightIterative() {
