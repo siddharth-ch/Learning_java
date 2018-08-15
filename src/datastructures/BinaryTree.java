@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
-import datastructures.BinaryTree.Node;
-
 public class BinaryTree {
     Node head = null;
 
@@ -62,6 +60,59 @@ public class BinaryTree {
 	b.mirrorOfTree(b.head);
 	System.out.println("Mirror of Tree : ");
 	BTreePrinter.printNode(b.head);
+	System.out.println("LCA of two nodes: " + getLCAOfNOdes(b.head, 9, 1).data);
+	System.out.println("Zig Zag Print of Tree");
+	printZigZagTree(b.head);
+    }
+
+    private static void printZigZagTree(Node temp) {
+	Stack<Node> zig = new Stack();
+	// true= zig (>) false = zag(<)
+	boolean var = false;
+	Stack<Node> zag = new Stack();
+	zig.add(temp);
+
+	while (!zig.isEmpty()) {
+	    temp = zig.pop();
+	    System.out.print(temp.data + " ");
+	    if (!var) {
+		if (temp.left != null) {
+		    zag.push(temp.left);
+		}
+		if (temp.right != null) {
+		    zag.push(temp.right);
+		}
+	    } else {
+		if (temp.right != null) {
+		    zag.push(temp.right);
+		}
+		if (temp.left != null) {
+		    zag.push(temp.left);
+		}
+	    }
+
+	    if (zig.isEmpty()) {
+		var = !var;
+		Stack st = zig;
+		zig = zag;
+		zag = st;
+	    }
+	}
+    }
+
+    private static Node getLCAOfNOdes(Node temp, int i, int j) {
+	if (temp == null) {
+	    return temp;
+	}
+	if (temp.data == i || temp.data == j)
+	    return temp;
+	Node left = getLCAOfNOdes(temp.left, i, j);
+	Node right = getLCAOfNOdes(temp.right, i, j);
+	if (left != null && right != null) {
+	    return temp;
+	} else {
+	    return left != null ? left : right;
+	}
     }
 
     private void mirrorOfTree(Node temp) {
@@ -72,7 +123,6 @@ public class BinaryTree {
 	temp.right = left;
 	mirrorOfTree(temp.left);
 	mirrorOfTree(temp.right);
-
     }
 
     private void findPathForAGivenSum(Node temp, int sum, int desiredSum, List<String> list, String str) {
@@ -299,90 +349,89 @@ public class BinaryTree {
 	}
     }
 
-}
+    static class BTreePrinter {
 
-class BTreePrinter {
-
-    public static <T extends Comparable<?>> void printNode(Node<T> root) {
-	int maxLevel = BTreePrinter.maxLevel(root);
-	System.out.println(maxLevel);
-	printNodeInternal(Collections.singletonList(root), 1, maxLevel);
-    }
-
-    private static <T extends Comparable<?>> void printNodeInternal(List<Node<T>> nodes, int level, int maxLevel) {
-	if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
-	    return;
-
-	int floor = maxLevel - level;
-	int edgeLines = (int) Math.pow(2, (Math.max(floor - 1, 0)));
-	int firstSpaces = (int) Math.pow(2, (floor)) - 1;
-	int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 1;
-
-	BTreePrinter.printWhitespaces(firstSpaces);
-
-	List<Node<T>> newNodes = new ArrayList<Node<T>>();
-	for (Node<T> node : nodes) {
-	    if (node != null) {
-		System.out.print(node.data);
-		newNodes.add(node.left);
-		newNodes.add(node.right);
-	    } else {
-		newNodes.add(null);
-		newNodes.add(null);
-		System.out.print(" ");
-	    }
-
-	    BTreePrinter.printWhitespaces(betweenSpaces);
+	public static <T extends Comparable<?>> void printNode(Node<T> root) {
+	    int maxLevel = BTreePrinter.maxLevel(root);
+	    System.out.println(maxLevel);
+	    printNodeInternal(Collections.singletonList(root), 1, maxLevel);
 	}
-	System.out.println("");
 
-	for (int i = 1; i <= edgeLines; i++) {
-	    for (int j = 0; j < nodes.size(); j++) {
-		BTreePrinter.printWhitespaces(firstSpaces - i);
-		if (nodes.get(j) == null) {
-		    BTreePrinter.printWhitespaces(edgeLines + edgeLines + i + 1);
-		    continue;
+	private static <T extends Comparable<?>> void printNodeInternal(List<Node<T>> nodes, int level, int maxLevel) {
+	    if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
+		return;
+
+	    int floor = maxLevel - level;
+	    int edgeLines = (int) Math.pow(2, (Math.max(floor - 1, 0)));
+	    int firstSpaces = (int) Math.pow(2, (floor)) - 1;
+	    int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 1;
+
+	    BTreePrinter.printWhitespaces(firstSpaces);
+
+	    List<Node<T>> newNodes = new ArrayList<Node<T>>();
+	    for (Node<T> node : nodes) {
+		if (node != null) {
+		    System.out.print(node.data);
+		    newNodes.add(node.left);
+		    newNodes.add(node.right);
+		} else {
+		    newNodes.add(null);
+		    newNodes.add(null);
+		    System.out.print(" ");
 		}
 
-		if (nodes.get(j).left != null)
-		    System.out.print("/");
-		else
-		    BTreePrinter.printWhitespaces(1);
+		BTreePrinter.printWhitespaces(betweenSpaces);
+	    }
+	    System.out.println("");
 
-		BTreePrinter.printWhitespaces(i + i - 1);
+	    for (int i = 1; i <= edgeLines; i++) {
+		for (int j = 0; j < nodes.size(); j++) {
+		    BTreePrinter.printWhitespaces(firstSpaces - i);
+		    if (nodes.get(j) == null) {
+			BTreePrinter.printWhitespaces(edgeLines + edgeLines + i + 1);
+			continue;
+		    }
 
-		if (nodes.get(j).right != null)
-		    System.out.print("\\");
-		else
-		    BTreePrinter.printWhitespaces(1);
+		    if (nodes.get(j).left != null)
+			System.out.print("/");
+		    else
+			BTreePrinter.printWhitespaces(1);
 
-		BTreePrinter.printWhitespaces(edgeLines + edgeLines - i);
+		    BTreePrinter.printWhitespaces(i + i - 1);
+
+		    if (nodes.get(j).right != null)
+			System.out.print("\\");
+		    else
+			BTreePrinter.printWhitespaces(1);
+
+		    BTreePrinter.printWhitespaces(edgeLines + edgeLines - i);
+		}
+
+		System.out.println("");
 	    }
 
-	    System.out.println("");
+	    printNodeInternal(newNodes, level + 1, maxLevel);
 	}
 
-	printNodeInternal(newNodes, level + 1, maxLevel);
-    }
-
-    private static void printWhitespaces(int count) {
-	for (int i = 0; i < count; i++)
-	    System.out.print(" ");
-    }
-
-    private static <T extends Comparable<?>> int maxLevel(Node<T> node) {
-	if (node == null)
-	    return 0;
-
-	return Math.max(BTreePrinter.maxLevel(node.left), BTreePrinter.maxLevel(node.right)) + 1;
-    }
-
-    private static <T> boolean isAllElementsNull(List<T> list) {
-	for (Object object : list) {
-	    if (object != null)
-		return false;
+	private static void printWhitespaces(int count) {
+	    for (int i = 0; i < count; i++)
+		System.out.print(" ");
 	}
 
-	return true;
+	private static <T extends Comparable<?>> int maxLevel(Node<T> node) {
+	    if (node == null)
+		return 0;
+
+	    return Math.max(BTreePrinter.maxLevel(node.left), BTreePrinter.maxLevel(node.right)) + 1;
+	}
+
+	private static <T> boolean isAllElementsNull(List<T> list) {
+	    for (Object object : list) {
+		if (object != null)
+		    return false;
+	    }
+
+	    return true;
+	}
     }
 }
