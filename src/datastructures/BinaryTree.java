@@ -227,6 +227,16 @@ public class BinaryTree {
 		traversePreORec(head.right);
 	}
 
+	public Node traverseMorrisInOrder(Node root) {
+		if (root == null) {
+			return null;
+		}
+		if (root.left != null) {
+
+		}
+		return root;
+	}
+
 	public void traverseInORec(Node head) {
 		if (head == null) {
 			return;
